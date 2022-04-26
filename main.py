@@ -1,9 +1,10 @@
+import os
 import json
 import discord
 
 
-TOKEN = '<TOKEN>'
-CHANNELID = 0000000
+DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
+CHANNELID = os.environ['CHANNELID']
 
 client = discord.Client()
 
@@ -22,6 +23,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    print(message)
     if not message.author.bot:
         return
     if not message.content.startswith('$meigen'):
@@ -33,4 +35,4 @@ async def on_message(message):
     print(response_message)
 
 
-client.run(TOKEN)
+client.run(DISCORD_TOKEN)
