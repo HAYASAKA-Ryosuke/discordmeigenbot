@@ -24,7 +24,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     print(message)
-    if not message.author.bot:
+    if message.author.bot:
         return
     if not message.content.startswith('$meigen'):
         return
