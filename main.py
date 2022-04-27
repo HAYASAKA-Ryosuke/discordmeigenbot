@@ -5,7 +5,7 @@ import discord
 
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNELID = os.environ['CHANNELID']
+CHANNELID = int(os.environ['CHANNELID'])
 
 client = discord.Client()
 
