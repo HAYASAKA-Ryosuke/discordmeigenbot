@@ -16,6 +16,6 @@ def fetch_weather():
        for area in content[0].get('timeSeries')[0].get('areas'):
            if area.get('area').get('code') == area_detail_code:
                for time_define, weather, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weathers'), area.get('weatherCodes')):
-                   result +=f"{time_define}: {get_emoji(weather_code)} {weather}\n"
+                   result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_emoji(weather_code)} {weather}\n"
        return f"東京の天気\n{result}"
     return ''
