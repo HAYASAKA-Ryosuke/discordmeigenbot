@@ -2,10 +2,6 @@ from urllib import request
 from datetime import datetime
 import json
 
-def get_emoji(code):
-    emojis = {1: '☀', 2: '☁', 3: '☂', 4: '☃'}
-    return emojis.get(int(code) // 100)
-
 def get_weather_message(code):
     weatherCodes = {
         100: "☀ 晴",
@@ -128,17 +124,28 @@ def get_weather_message(code):
         450: "☃⛈ 雪で雷を伴う"}
     return weatherCodes.get(int(code))
 
-def fetch_weather():
-    path_code = "130000" # tokyo
-    area_detail_code = "130010" # tokyo
+
+def download_weather_info(path_code, detail_code, name):
     url = f"https://www.jma.go.jp/bosai/forecast/data/forecast/{path_code}.json"
     response = request.urlopen(url)
     content = json.loads(response.read().decode('utf8'))
     if content and len(content) >= 1:
        result = ''
        for area in content[0].get('timeSeries')[0].get('areas'):
-           if area.get('area').get('code') == area_detail_code:
+           if area.get('area').get('code') == detail_code:
                for time_define, weather, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weathers'), area.get('weatherCodes')):
                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_weather_message(weather_code)}\n"
-       return f"東京の天気\n{result}"
+       return f"{name}\n{result}"
     return ''
+
+
+def fetch_weather():
+    areas = [
+        dict(code="130000", detail_code = "130010", name="東京"),  # tokyo
+        dict(code="016000", detail_code = "016010", name="札幌(石狩地方)"),  # sapporo
+    ]
+    result = ''
+    for area in areas:
+        result += f"{download_weather_info(area['code'], area['detail_code'], area['name'])}\n"
+
+    return result
