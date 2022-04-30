@@ -133,7 +133,7 @@ def download_weather_info(path_code, detail_code, name):
        result = ''
        for area in content[0].get('timeSeries')[0].get('areas'):
            if area.get('area').get('code') == detail_code:
-               for time_define, weather, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weathers'), area.get('weatherCodes')):
+               for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_weather_message(weather_code)}\n"
        return f"{name}\n{result}"
     return ''
