@@ -39,9 +39,9 @@ async def on_message(message):
         await channel.send(response_message)
         print(response_message)
 
-    if message.content.startswith('!EURO'):
+    if message.content.startswith('!EUR'):
         price = int(message.content.split()[1])
-        response_message = calc_exchange(price, "EURO", "JPY")
+        response_message = calc_exchange(price, "EUR", "JPY")
         await channel.send(response_message)
         print(response_message)
 
