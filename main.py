@@ -2,6 +2,7 @@ import os
 import discord
 from fortune import fetch_fortune
 from weather import fetch_weather
+from money_convert import calc_exchange
 
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -29,6 +30,18 @@ async def on_message(message):
     
     if message.content.startswith('!weather'):
         response_message = fetch_weather()
+        await channel.send(response_message)
+        print(response_message)
+
+    if message.content.startswith('!USD'):
+        price = int(message.content.split()[1])
+        response_message = calc_exchange(price, "USD", "JPY")
+        await channel.send(response_message)
+        print(response_message)
+
+    if message.content.startswith('!EURO'):
+        price = int(message.content.split()[1])
+        response_message = calc_exchange(price, "EURO", "JPY")
         await channel.send(response_message)
         print(response_message)
 
