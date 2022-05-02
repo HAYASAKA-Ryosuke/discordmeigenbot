@@ -14,4 +14,4 @@ def calc_exchange(price, base, to):
 
     if exchange_value == -1: return "fetch error"
 
-    return f"{base}: {price} → {to}: {price * exchange_value}"
+    return f"{base}: {price} → {to}: {round(price * exchange_value):,}"
