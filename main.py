@@ -6,7 +6,6 @@ from money_convert import calc_exchange
 
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNELID = int(os.environ['CHANNELID'])
 
 client = discord.Client()
 
@@ -20,8 +19,8 @@ async def on_message(message):
     print(message)
     if message.author.bot:
         return
-
-    channel = client.get_channel(CHANNELID)
+ 
+    channel = client.get_channel(message.channel.id)
 
     if message.content.startswith('!meigen'):
         response_message = fetch_fortune()
