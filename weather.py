@@ -128,7 +128,7 @@ def get_weather_message(code):
 def download_weather_info(path_code, detail_code, name):
     url = f"https://www.jma.go.jp/bosai/forecast/data/forecast/{path_code}.json"
     response = request.urlopen(url)
-    content = json.loads(response.read().decode('utf8'))
+    content = json.loads(response.read().decode())
     if content and len(content) >= 1:
        result = ''
        for area in content[0].get('timeSeries')[0].get('areas'):

@@ -1,6 +1,6 @@
 import os
 import discord
-from fortune import fetch_fortune
+from meigen import fetch_maigen
 from weather import fetch_weather
 from money_convert import calc_exchange
 
@@ -23,7 +23,7 @@ async def on_message(message):
     channel = client.get_channel(message.channel.id)
 
     if message.content.startswith('!meigen'):
-        response_message = fetch_fortune()
+        response_message = fetch_meigen()
         await channel.send(response_message)
         print(response_message)
     

@@ -2,7 +2,7 @@ import urllib
 import json
 
 
-def fetch_fortune():
+def fetch_meigen():
     url = "https://meigen.doodlenote.net/api/json.php"
     response = urllib.request.urlopen(url)
     content = json.loads(response.read().decode('utf8'))
