@@ -1,6 +1,6 @@
 import os
 import discord
-from meigen import fetch_maigen
+from meigen import fetch_meigen
 from weather import fetch_weather
 from money_convert import calc_exchange
 
