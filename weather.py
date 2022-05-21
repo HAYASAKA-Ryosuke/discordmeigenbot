@@ -124,22 +124,33 @@ def get_weather_message(code):
         450: "☃⛈ 雪で雷を伴う"}
     return weatherCodes.get(int(code))
 
+def get_temps(content, temp_average_code: str, days: int):
+    result = []
+
+    # 本日の気温
+    for area in content[1].get('tempAverage').get('areas'):
+        if area.get('area').get('code') == temp_average_code:
+            result.append(dict(max=area.get('max'), min=area.get('min')))
+
+    # 翌日以降の気温
+    for area in content[1].get('timeSeries')[1].get('areas'):
+        if area.get('area').get('code') == temp_average_code:
+            for i in range(days - 1):
+                result.append(dict(max=area.get('tempsMax')[i + 1], min=area.get('tempsMin')[i + 1]))
+    return result
+
 
 def download_weather_info(path_code, detail_code, name, temp_average_code):
     url = f"https://www.jma.go.jp/bosai/forecast/data/forecast/{path_code}.json"
     response = request.urlopen(url)
     content = json.loads(response.read().decode())
-    temp_average = {}
     if content and len(content) >= 1:
         result = ''
-        for area in content[1].get('tempAverage').get('areas'):
-            if area.get('area').get('code') == temp_average_code:
-                temp_average = dict(max=area.get('max'), min=area.get('min'))
-
         for area in content[0].get('timeSeries')[0].get('areas'):
             if area.get('area').get('code') == detail_code:
-                for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
-                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {temp_average.get('max', '')}-{temp_average.get('min', '')} {get_weather_message(weather_code)}\n"
+                temps = get_temps(content, temp_average_code, len(content[0].get('timeSeries')[0].get('timeDefines')))
+                for time_define, weather_code, temp in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes'), temps):
+                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_weather_message(weather_code)} {temp.get('max', '')}-{temp.get('min', '')}度\n"
         return f"{name}\n{result}"
     return ''
 
@@ -147,10 +158,11 @@ def download_weather_info(path_code, detail_code, name, temp_average_code):
 def fetch_weather():
     areas = [
         dict(code="130000", detail_code = "130010", temp_average_code="44132", name="東京"),  # tokyo
-        dict(code="016000", detail_code = "016010", temp_average_code="", name="札幌(石狩地方)"),  # sapporo
+        dict(code="016000", detail_code = "016010", temp_average_code="14163", name="札幌(石狩地方)"),  # sapporo
     ]
     result = ''
     for area in areas:
         result += f"{download_weather_info(area['code'], area['detail_code'], area['name'], area['temp_average_code'])}\n"
-
     return result
+
+fetch_weather()
