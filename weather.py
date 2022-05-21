@@ -125,27 +125,32 @@ def get_weather_message(code):
     return weatherCodes.get(int(code))
 
 
-def download_weather_info(path_code, detail_code, name):
+def download_weather_info(path_code, detail_code, name, temp_average_code):
     url = f"https://www.jma.go.jp/bosai/forecast/data/forecast/{path_code}.json"
     response = request.urlopen(url)
     content = json.loads(response.read().decode())
+    temp_average = {}
     if content and len(content) >= 1:
-       result = ''
-       for area in content[0].get('timeSeries')[0].get('areas'):
-           if area.get('area').get('code') == detail_code:
-               for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
-                   result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_weather_message(weather_code)}\n"
-       return f"{name}\n{result}"
+        result = ''
+        for area in content[1].get('tempAverage').get('areas'):
+            if area.get('area').get('code') == temp_average_code:
+                temp_average = dict(max=area.get('max'), min=area.get('min'))
+
+        for area in content[0].get('timeSeries')[0].get('areas'):
+            if area.get('area').get('code') == detail_code:
+                for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
+                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {temp_average.get('max', '')}-{temp_average.get('min', '')} {get_weather_message(weather_code)}\n"
+        return f"{name}\n{result}"
     return ''
 
 
 def fetch_weather():
     areas = [
-        dict(code="130000", detail_code = "130010", name="東京"),  # tokyo
-        dict(code="016000", detail_code = "016010", name="札幌(石狩地方)"),  # sapporo
+        dict(code="130000", detail_code = "130010", temp_average_code="44132", name="東京"),  # tokyo
+        dict(code="016000", detail_code = "016010", temp_average_code="", name="札幌(石狩地方)"),  # sapporo
     ]
     result = ''
     for area in areas:
-        result += f"{download_weather_info(area['code'], area['detail_code'], area['name'])}\n"
+        result += f"{download_weather_info(area['code'], area['detail_code'], area['name'], area['temp_average_code'])}\n"
 
     return result
