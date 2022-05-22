@@ -153,10 +153,10 @@ def download_weather_info(path_code, detail_code, name, temp_average_code):
             if area.get('area').get('code') == detail_code:
                 temps = get_temps(content, temp_average_code, len(content[0].get('timeSeries')[0].get('timeDefines')))
                 for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
-                    time_define = datetime.fromisoformat(time_define).strftime('%Y-%m-%d')
+                    time_define = datetime.fromisoformat(time_define).strftime('%m-%d')
                     max_temp = temps.get(time_define, dict(max='-', min='-')).get('max')
                     min_temp = temps.get(time_define, dict(max='-', min='-')).get('min')
-                    result +=f"{time_define}: {get_weather_message(weather_code)} {min_temp}/{max_temp}\n"
+                    result +=f"{time_define}: {get_weather_message(weather_code)} {min_temp}-{max_temp}℃\n"
         return f"{name}\n{result}"
     return ''
 
