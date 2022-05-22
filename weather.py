@@ -125,18 +125,21 @@ def get_weather_message(code):
     return weatherCodes.get(int(code))
 
 def get_temps(content, temp_average_code: str, days: int):
-    result = []
+    result = {}
 
-    # 本日の気温
-    for area in content[1].get('tempAverage').get('areas'):
-        if area.get('area').get('code') == temp_average_code:
-            result.append(dict(max=area.get('max'), min=area.get('min')))
+    def get_current_temp():
+        for area in content[0].get('timeSeries')[2].get('areas'):
+            if area.get('area').get('code') == temp_average_code:
+                return dict(max=area.get('temps')[1], min=area.get('temps')[0])
 
-    # 翌日以降の気温
     for area in content[1].get('timeSeries')[1].get('areas'):
         if area.get('area').get('code') == temp_average_code:
-            for i in range(days - 1):
-                result.append(dict(max=area.get('tempsMax')[i + 1], min=area.get('tempsMin')[i + 1]))
+            for i, time_define in enumerate(content[1].get('timeSeries')[1].get('timeDefines')):
+                time_define = datetime.fromisoformat(time_define).strftime('%Y-%m-%d')
+                if area.get('tempsMax')[i] == '':
+                    result[time_define] = get_current_temp()
+                else:
+                    result[time_define] = dict(max=area.get('tempsMax')[i], min=area.get('tempsMin')[i])
     return result
 
 
@@ -149,8 +152,11 @@ def download_weather_info(path_code, detail_code, name, temp_average_code):
         for area in content[0].get('timeSeries')[0].get('areas'):
             if area.get('area').get('code') == detail_code:
                 temps = get_temps(content, temp_average_code, len(content[0].get('timeSeries')[0].get('timeDefines')))
-                for time_define, weather_code, temp in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes'), temps):
-                    result +=f"{datetime.fromisoformat(time_define).strftime('%m/%d %H:%M')}: {get_weather_message(weather_code)} {temp.get('max', '')}-{temp.get('min', '')}度\n"
+                for time_define, weather_code in zip(content[0].get('timeSeries')[0].get('timeDefines'), area.get('weatherCodes')):
+                    time_define = datetime.fromisoformat(time_define).strftime('%Y-%m-%d')
+                    max_temp = temps.get(time_define, dict(max='-', min='-')).get('max')
+                    min_temp = temps.get(time_define, dict(max='-', min='-')).get('min')
+                    result +=f"{time_define}: {get_weather_message(weather_code)} {max_temp}-{min_temp}度\n"
         return f"{name}\n{result}"
     return ''
 
