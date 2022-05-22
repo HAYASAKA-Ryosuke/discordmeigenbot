@@ -135,7 +135,7 @@ def get_temps(content, temp_average_code: str, days: int):
     for area in content[1].get('timeSeries')[1].get('areas'):
         if area.get('area').get('code') == temp_average_code:
             for i, time_define in enumerate(content[1].get('timeSeries')[1].get('timeDefines')):
-                time_define = datetime.fromisoformat(time_define).strftime('%Y-%m-%d')
+                time_define = datetime.fromisoformat(time_define).strftime('%m-%d')
                 if area.get('tempsMax')[i] == '':
                     result[time_define] = get_current_temp()
                 else:
