@@ -156,7 +156,7 @@ def download_weather_info(path_code, detail_code, name, temp_average_code):
                     time_define = datetime.fromisoformat(time_define).strftime('%Y-%m-%d')
                     max_temp = temps.get(time_define, dict(max='-', min='-')).get('max')
                     min_temp = temps.get(time_define, dict(max='-', min='-')).get('min')
-                    result +=f"{time_define}: {get_weather_message(weather_code)} {min_temp}/{max_temp}度\n"
+                    result +=f"{time_define}: {get_weather_message(weather_code)}, 最低/最高(℃) {min_temp}/{max_temp}\n"
         return f"{name}\n{result}"
     return ''
 
