@@ -1,3 +1,4 @@
+import time
 from urllib import request
 from datetime import datetime
 import json
@@ -127,17 +128,20 @@ def get_weather_message(code):
 def get_temps(content, temp_average_code: str, days: int):
     result = {}
 
-    def get_current_temp():
-        for area in content[0].get('timeSeries')[2].get('areas'):
-            if area.get('area').get('code') == temp_average_code:
-                return dict(max=area.get('temps')[1], min=area.get('temps')[0])
+    for area in content[0].get('timeSeries')[2].get('areas'):
+        if area.get('area').get('code') == temp_average_code:
+            for i, time_define in enumerate(content[0].get('timeSeries')[2].get('timeDefines')):
+                if (i % 2 != 0):
+                    continue
+                time_define = datetime.fromisoformat(time_define).strftime('%m-%d')
+                result[time_define] = dict(max=area.get('temps')[i + 1], min=area.get('temps')[i])
 
     for area in content[1].get('timeSeries')[1].get('areas'):
         if area.get('area').get('code') == temp_average_code:
             for i, time_define in enumerate(content[1].get('timeSeries')[1].get('timeDefines')):
                 time_define = datetime.fromisoformat(time_define).strftime('%m-%d')
                 if area.get('tempsMax')[i] == '':
-                    result[time_define] = get_current_temp()
+                    pass
                 else:
                     result[time_define] = dict(max=area.get('tempsMax')[i], min=area.get('tempsMin')[i])
     return result
@@ -170,5 +174,3 @@ def fetch_weather():
     for area in areas:
         result += f"{download_weather_info(area['code'], area['detail_code'], area['name'], area['temp_average_code'])}\n"
     return result
-
-fetch_weather()
