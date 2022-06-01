@@ -48,7 +48,7 @@ async def on_message(message):
     if message.content.startswith('!URL'):
         url = message.content.split()[1]
         response_message = erase_query_parameter(url)
-        await channel.send(response_message)
+        await channel.send(embed=response_message)
         print(response_message)
 
 
