@@ -47,9 +47,7 @@ async def on_message(message):
 
     if message.content.startswith('!URL'):
         url = message.content.split()[1]
-        response_message = erase_query_parameter(url)
-        embed = discord.Embed()
-        embed.set_image(url=response_message)
+        embed = erase_query_parameter(url)
         await channel.send(embed=embed)
         print(response_message)
 
