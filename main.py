@@ -46,8 +46,8 @@ async def on_message(message):
         print(response_message)
 
     if message.content.startswith('!URL'):
-        price = int(message.content.split()[1])
-        response_message = erase_query_parameter(price)
+        url = message.content.split()[1]
+        response_message = erase_query_parameter(url)
         await channel.send(response_message)
         print(response_message)
 
