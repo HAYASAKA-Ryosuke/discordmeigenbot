@@ -1,4 +1,4 @@
-name: cbor unittest
+name: discord bot unittest
 on: [push]
 jobs:
   Explore-GitHub-Actions:
