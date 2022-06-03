@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch
 
 from weather import formatting_weather_info
 
