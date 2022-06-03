@@ -1,4 +1,3 @@
-import time
 from urllib import request
 from datetime import datetime
 import json
@@ -147,10 +146,13 @@ def get_temps(content, temp_average_code: str, days: int):
     return result
 
 
-def download_weather_info(path_code, detail_code, name, temp_average_code):
+def download_weather_info(path_code):
     url = f"https://www.jma.go.jp/bosai/forecast/data/forecast/{path_code}.json"
     response = request.urlopen(url)
-    content = json.loads(response.read().decode())
+    return json.loads(response.read().decode())
+
+
+def formatting_weather_info(content, detail_code, name, temp_average_code):
     if content and len(content) >= 1:
         result = ''
         for area in content[0].get('timeSeries')[0].get('areas'):
@@ -172,5 +174,6 @@ def fetch_weather():
     ]
     result = ''
     for area in areas:
-        result += f"{download_weather_info(area['code'], area['detail_code'], area['name'], area['temp_average_code'])}\n"
+        raw_weather_info = download_weather_info(area['code'])
+        result += f"{formatting_weather_info(raw_weather_info, area['detail_code'], area['name'], area['temp_average_code'])}\n"
     return result

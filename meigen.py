@@ -1,10 +1,14 @@
-import urllib
+from urllib.request import urlopen
 import json
 
 
-def fetch_meigen():
+def download_meigen() -> list[dict]:
     url = "https://meigen.doodlenote.net/api/json.php"
-    response = urllib.request.urlopen(url)
-    content = json.loads(response.read().decode('utf8'))
-    if content and len(content) == 1:
-       return f"{content[0].get('meigen')} by {content[0].get('auther')}"
+    response = urlopen(url)
+    return json.loads(response.read().decode('utf8'))
+
+
+def fetch_meigen():
+    meigen = download_meigen()
+    if meigen and len(meigen) == 1:
+       return f"{meigen[0].get('meigen')} by {meigen[0].get('auther')}"
