@@ -4,6 +4,7 @@ from meigen import fetch_meigen
 from weather import fetch_weather
 from money_convert import calc_exchange
 from erase_query_parameter import erase_query_parameter
+from help import get_help_message
 
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -22,6 +23,11 @@ async def on_message(message):
         return
  
     channel = client.get_channel(message.channel.id)
+
+    if message.content.startswith('!help'):
+        response_message = get_help_message()
+        await channel.send(response_message)
+        print(response_message)
 
     if message.content.startswith('!meigen'):
         response_message = fetch_meigen()
