@@ -140,7 +140,8 @@ def get_temps(content, temp_average_code: str, days: int):
             for i, time_define in enumerate(content[1].get('timeSeries')[1].get('timeDefines')):
                 time_define = datetime.fromisoformat(time_define).strftime('%m-%d')
                 if area.get('tempsMax')[i] == '':
-                    pass
+                    average_temp = content[1].get('tempAverage').get('areas')[0]
+                    result[time_define] = dict(max=average_temp.get('max'), min=average_temp.get('min'))
                 else:
                     result[time_define] = dict(max=area.get('tempsMax')[i], min=area.get('tempsMin')[i])
     return result
