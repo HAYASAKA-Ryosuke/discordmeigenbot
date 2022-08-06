@@ -143,6 +143,11 @@ def get_temps(content, temp_average_code: str, days: int):
                     pass
                 else:
                     result[time_define] = dict(max=area.get('tempsMax')[i], min=area.get('tempsMin')[i])
+    today = datetime.now().strftime("%m-%d")
+    if today not in result.keys():
+        for area in content[1].get('tempAverage').get('areas'):
+            if (area.get('area').get('code') == temp_average_code):
+                result[today] = dict(max=area.get('max'), min=area.get('min'))
     return result
 
 
