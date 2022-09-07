@@ -58,7 +58,7 @@ async def on_message(message):
         print(response_message)
 
     if message.content.startswith('!calc'):
-        content = message.content.split()[1]
+        content = message.content.lstrip('!calc ')
         response_message = eval(content)
         await channel.send(response_message)
         print(response_message)
