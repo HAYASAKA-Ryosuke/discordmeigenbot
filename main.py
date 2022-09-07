@@ -59,7 +59,7 @@ async def on_message(message):
 
     if message.content.startswith('!calc'):
         content = message.content.split()[1]
-        response_message = erase_query_parameter(content)
+        response_message = eval(content)
         await channel.send(response_message)
         print(response_message)
 
