@@ -57,5 +57,11 @@ async def on_message(message):
         await channel.send(embed=embed)
         print(response_message)
 
+    if message.content.startswith('!calc'):
+        content = message.content.split()[1]
+        response_message = erase_query_parameter(content)
+        await channel.send(response_message)
+        print(response_message)
+
 
 client.run(DISCORD_TOKEN)
